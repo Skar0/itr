@@ -4,6 +4,10 @@ pthread_t thread_ids[99];
 char *words_array[99];
     
 void printMessage(int j) {
+    
+    if(words_array[j+1] != NULL) {
+        pthread_join(thread_ids[j+1], NULL);
+    }
     printf("%s\n", words_array[j]);
 }
 
@@ -29,14 +33,14 @@ int main() {
         i++;
         words_array[i] = strtok(NULL, separator);
     }
-          
-    while(j<i) {
-        if( (pthread_create(&thread_ids[j], NULL, &printMessage, j ) ) < 0) {
+    i--;
+    while(i>=0) {
+        if( (pthread_create(&thread_ids[i], NULL, &printMessage, i ) ) < 0) {
             perror("ERROR CREATING THE THREAD");
         }
         
-        pthread_join(thread_ids[j], NULL);
-        j++;
+        pthread_join(thread_ids[i], NULL);
+        i--;
     }
     
 }
